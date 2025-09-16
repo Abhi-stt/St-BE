@@ -39,6 +39,22 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'StoryTeller Backend API is running!',
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      health: '/health',
+      corsTest: '/cors-test',
+      auth: '/api/auth',
+      stories: '/api/stories',
+      ai: '/api/ai'
+    }
+  });
+});
+
 // CORS test endpoint
 app.get('/cors-test', (req, res) => {
   res.json({
@@ -76,6 +92,19 @@ app.listen(PORT, () => {
   console.log(`🚀 Backend server running on port ${PORT}`);
   console.log(`📡 Health check: http://localhost:${PORT}/health`);
   console.log(`🔐 Auth endpoint: http://localhost:${PORT}/api/auth/login`);
+  console.log(`🌐 CORS test: http://localhost:${PORT}/cors-test`);
+  console.log(`✅ Server is ready to accept requests!`);
+});
+
+// Handle server errors
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
 });
 
 module.exports = app;
