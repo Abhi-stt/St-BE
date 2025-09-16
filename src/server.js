@@ -20,22 +20,15 @@ const allowedOrigins = [
 
 console.log('🌐 Allowed CORS origins:', allowedOrigins);
 
+// Temporarily allow all origins for debugging
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.includes(origin)) {
-      console.log('✅ CORS allowed for origin:', origin);
-      return callback(null, true);
-    } else {
-      console.log('❌ CORS blocked for origin:', origin);
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Allow all origins temporarily
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+console.log('🌐 CORS configured to allow all origins temporarily');
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -43,6 +36,15 @@ app.get('/health', (req, res) => {
     status: 'Backend server is running',
     timestamp: new Date().toISOString(),
     port: PORT
+  });
+});
+
+// CORS test endpoint
+app.get('/cors-test', (req, res) => {
+  res.json({
+    message: 'CORS is working!',
+    origin: req.headers.origin,
+    timestamp: new Date().toISOString()
   });
 });
 
